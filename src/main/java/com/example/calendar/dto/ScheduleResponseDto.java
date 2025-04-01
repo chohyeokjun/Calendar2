@@ -1,5 +1,6 @@
 package com.example.calendar.dto;
 
+import com.example.calendar.entity.Schedule;
 import lombok.Getter;
 
 @Getter
@@ -14,4 +15,5 @@ public class ScheduleResponseDto {
         this.title = title;
         this.task = task;
     }
+
 }

@@ -6,6 +6,9 @@ import com.example.calendar.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ScheduleService {
@@ -20,5 +23,16 @@ public class ScheduleService {
         Schedule saveSchedule = scheduleRepository.save(schedule);
 
         return new ScheduleResponseDto(saveSchedule.getId(), saveSchedule.getTitle(), saveSchedule.getTask());
+    }
+
+    public List<ScheduleResponseDto> findAllSchedule() {
+        List<Schedule> findList = scheduleRepository.findAll();
+        // schedule 타입의 리스트를 어떻게 dto형태로 넘겨줄까....
+        List<ScheduleResponseDto> scheduleResponseDtoList = new ArrayList<>();
+
+        for (Schedule schedule : findList) {
+            scheduleResponseDtoList.add(new ScheduleResponseDto(schedule.getId(), schedule.getTitle(), schedule.getTask()));
+        }
+        return scheduleResponseDtoList;
     }
 }
