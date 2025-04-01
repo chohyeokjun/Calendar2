@@ -5,6 +5,7 @@ import com.example.calendar.dto.ScheduleResponseDto;
 import com.example.calendar.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +41,11 @@ public class ScheduleController {
     }
 
     // 일정 삭제
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete (@PathVariable Long id) {
+        scheduleService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 
 }

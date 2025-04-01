@@ -59,4 +59,10 @@ public class ScheduleService {
         // save 로 수정
 //        scheduleRepository.save(findSchedule(title, task));
     }
+
+    public void delete(Long id) {
+        // delete() - 괄호 안에 객체가 들어가야 하므로 삭제할 객체 조회
+        Schedule findScehdule = scheduleRepository.findByIdOrElseThrow(id);
+        scheduleRepository.delete(findScehdule);
+    }
 }
