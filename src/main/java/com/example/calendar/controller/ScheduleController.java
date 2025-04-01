@@ -2,7 +2,6 @@ package com.example.calendar.controller;
 
 import com.example.calendar.dto.ScheduleRequestDto;
 import com.example.calendar.dto.ScheduleResponseDto;
-import com.example.calendar.entity.Schedule;
 import com.example.calendar.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,8 +31,16 @@ public class ScheduleController {
         List<ScheduleResponseDto> allSchedule = scheduleService.findAllSchedule();
         return new ResponseEntity<>(allSchedule, HttpStatus.OK);
     }
+
     // 일정 수정
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateSchedule (@PathVariable Long id, @RequestBody ScheduleRequestDto requestDto) {
+        scheduleService.updateSchedule(id, requestDto.getTitle(), requestDto.getTask());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     // 일정 삭제
 
 
 }
+
