@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Entity
 @Getter
-@Table
+@Table(name = "schedule")
 // BaseEntity 로부터 생성 시간과 수정 시간을 자동 Mapping 받음
 public class Schedule extends BaseEntity{
     // id
@@ -16,7 +16,9 @@ public class Schedule extends BaseEntity{
     private Long id;
 
     // 작성명
-    private String username;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     // 할일 제목
     @Column(nullable = false) // null 값 불허
@@ -30,7 +32,6 @@ public class Schedule extends BaseEntity{
     public Schedule () {}
 
     public Schedule (String username, String title, String task) {
-        this.username = username;
         this.title = title;
         this.task = task;
     }
@@ -39,5 +40,9 @@ public class Schedule extends BaseEntity{
     public void updateSchedule(String title, String task) {
         this.title = title;
         this.task = task;
+    }
+
+    public void setUser (User user) {
+        this.user = user;
     }
 }

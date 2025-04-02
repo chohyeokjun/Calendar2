@@ -17,25 +17,25 @@ public class UserController {
     // 서비스 접근
     private final UserService userService;
 
-    // 유저 생성
-    @PostMapping
-    public ResponseEntity<UserResponseDto> saveUser (@RequestBody UserRequestDto requestDto) {
+    // 유저 생성 (회원 가입)
+    @PostMapping("/signup")
+    public ResponseEntity<UserResponseDto> signUp (@RequestBody UserRequestDto requestDto) {
         // 서비스의 저장 메서드 호출
-        UserResponseDto userResponseDto = userService.saveUser(requestDto.getUsername(), requestDto.getEmail());
+        UserResponseDto userResponseDto = userService.signUp(requestDto.getUsername(), requestDto.getEmail(), requestDto.getPassword());
         return new ResponseEntity<>(userResponseDto, HttpStatus.CREATED);
     }
 
-    // 유저 조회
-    @GetMapping
-    public ResponseEntity<List<UserResponseDto>> findById () {
-        List<UserResponseDto> findUsers = userService.findUsers();
+    // 유저 단건 조회
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponseDto> findById (@PathVariable Long id) {
+        UserResponseDto findUsers = userService.findUsers(id);
         return new ResponseEntity<>(findUsers, HttpStatus.OK);
     }
 
     // 유저 수정
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateUser (@PathVariable Long id, @RequestBody UserRequestDto requestDto) {
-        userService.updateUser(id, requestDto.getEmail());
+        userService.updateUser(id, requestDto.getEmail(), requestDto.getPassword());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

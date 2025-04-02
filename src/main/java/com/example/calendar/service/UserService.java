@@ -5,10 +5,11 @@ import com.example.calendar.entity.User;
 import com.example.calendar.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -16,35 +17,35 @@ public class UserService {
     // repository 접근
     private final UserRepository userRepository;
 
-    public UserResponseDto saveUser(String username, String email) {
+    // 회원가입
+    public UserResponseDto signUp(String username, String email, String password) {
         // 파라미터 값을 넘겨준 user 객체 생성
-        User user = new User(username, email);
+        User user = new User(username, email, password);
         // 위 user 객체를 DB에 저장한 savedUser 객체 생성
-        User savedUser = userRepository.save(user);
-        return new UserResponseDto(savedUser.getId(), savedUser.getUsername(), savedUser.getEmail(), savedUser.getCreatedAt(), savedUser.getModifiedAT());
+        User signUp = userRepository.save(user);
+        return new UserResponseDto(signUp.getId(), signUp.getUsername(), signUp.getEmail(), signUp.getCreatedAt(), signUp.getModifiedAT());
     }
 
-    public List<UserResponseDto> findUsers() {
-        return userRepository.findAll()
-                .stream()
-                .map(user -> new UserResponseDto(
-                        user.getId(),
-                        user.getUsername(),
-                        user.getEmail(),
-                        user.getCreatedAt(),
-                        user.getModifiedAT()
-                ))
-                .toList();
+    // 유저 조회
+    public UserResponseDto findUsers(Long id) {
+        User findUser = userRepository.findByIdOrElseThrow(id);
+        return new UserResponseDto(id, findUser.getUsername(), findUser.getEmail(), findUser.getCreatedAt(), findUser.getModifiedAT());
     }
 
+    // 수정
     @Transactional
-    public void updateUser(Long id, String email) {
+    public void updateUser(Long id, String email, String password) {
         // 유저 정보 조회
         User findUser = userRepository.findByIdOrElseThrow(id);
+        // 비밀번호 검증
+        if (!findUser.getPassword().equals(password)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
+        }
         // 해당 유저 정보 수정
         findUser.updateUser(email);
     }
 
+    // 유저 삭제 필요??
     public void deleteUser(Long id) {
         User findUser = userRepository.findByIdOrElseThrow(id);
         userRepository.delete(findUser);

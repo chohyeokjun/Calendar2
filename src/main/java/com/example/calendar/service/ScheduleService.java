@@ -2,7 +2,9 @@ package com.example.calendar.service;
 
 import com.example.calendar.dto.ScheduleResponseDto;
 import com.example.calendar.entity.Schedule;
+import com.example.calendar.entity.User;
 import com.example.calendar.repository.ScheduleRepository;
+import com.example.calendar.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,12 +15,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ScheduleService {
 
-    // repository 접근
+    // scheduleRepository 접근
     private final ScheduleRepository scheduleRepository;
+    // UserRepository 접근
+    private final UserRepository userRepository;
 
     public ScheduleResponseDto saveSchedule(String username, String title, String task) {
+        // 유저 객체 생성
+        User findUser = userRepository.findUserByIdOrElseThrow(username);
         // Schedule 객체 생성
         Schedule schedule = new Schedule(username, title, task);
+        // schedule 의 user 속성에 findUser 객체 정보 저장
+        schedule.setUser(findUser);
         // 객체 정보 저장
         Schedule saveSchedule = scheduleRepository.save(schedule);
 
