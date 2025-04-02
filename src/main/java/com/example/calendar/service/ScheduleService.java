@@ -7,7 +7,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,7 +22,7 @@ public class ScheduleService {
         // 객체 정보 저장
         Schedule saveSchedule = scheduleRepository.save(schedule);
 
-        return new ScheduleResponseDto(saveSchedule.getId(), saveSchedule.getTitle(), saveSchedule.getTask());
+        return new ScheduleResponseDto(saveSchedule.getId(), saveSchedule.getTitle(), saveSchedule.getTask(), saveSchedule.getCreatedAt(), saveSchedule.getModifiedAT());
     }
 
     public List<ScheduleResponseDto> findAllSchedule() {
@@ -41,7 +40,9 @@ public class ScheduleService {
                 .map(schedule -> new ScheduleResponseDto(
                         schedule.getId(),
                         schedule.getTitle(),
-                        schedule.getTask()
+                        schedule.getTask(),
+                        schedule.getCreatedAt(),
+                        schedule.getModifiedAT()
                 ))
                 .toList();
     }
