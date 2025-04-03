@@ -2,10 +2,10 @@ package com.example.calendar.controller;
 
 import com.example.calendar.dto.ScheduleRequestDto;
 import com.example.calendar.dto.ScheduleResponseDto;
+import com.example.calendar.dto.ScheduleUpdateRequestDto;
 import com.example.calendar.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,8 +35,8 @@ public class ScheduleController {
 
     // 일정 수정
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateSchedule (@PathVariable Long id, @RequestBody ScheduleRequestDto requestDto) {
-        scheduleService.updateSchedule(id, requestDto.getTitle(), requestDto.getTask());
+    public ResponseEntity<Void> updateSchedule (@PathVariable Long id, @RequestBody ScheduleUpdateRequestDto updateRequestDto) {
+        scheduleService.updateSchedule(id, updateRequestDto.getTitle(), updateRequestDto.getTask());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

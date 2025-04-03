@@ -2,17 +2,15 @@ package com.example.calendar.service;
 
 import com.example.calendar.dto.LoginResponseDto;
 import com.example.calendar.dto.UserResponseDto;
+import com.example.calendar.dto.UserSignUpResponseDto;
 import com.example.calendar.entity.User;
 import com.example.calendar.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,12 +19,12 @@ public class UserService {
     private final UserRepository userRepository;
 
     // 회원가입
-    public UserResponseDto signUp(String username, String email, String password) {
+    public UserSignUpResponseDto signUp(String username, String email, String password) {
         // 파라미터 값을 넘겨준 user 객체 생성
         User user = new User(username, email, password);
         // 위 user 객체를 DB에 저장한 savedUser 객체 생성
         User signUp = userRepository.save(user);
-        return new UserResponseDto(signUp.getId(), signUp.getUsername(), signUp.getEmail(), signUp.getCreatedAt(), signUp.getModifiedAT());
+        return new UserSignUpResponseDto(signUp.getId(), signUp.getUsername(), signUp.getEmail(), signUp.getCreatedAt(), signUp.getModifiedAT());
     }
 
     // 유저 조회
@@ -37,7 +35,7 @@ public class UserService {
 
     // 수정
     @Transactional
-    public void updateUser(Long id, String email, String password) {
+    public void updateUser(Long id, String email) {
         // 유저 정보 조회
         User findUser = userRepository.findByIdOrElseThrow(id);
         // 해당 유저 정보 수정
