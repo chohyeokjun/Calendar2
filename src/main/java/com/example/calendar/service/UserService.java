@@ -1,15 +1,18 @@
 package com.example.calendar.service;
 
+import com.example.calendar.dto.LoginResponseDto;
 import com.example.calendar.dto.UserResponseDto;
 import com.example.calendar.entity.User;
 import com.example.calendar.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,10 +40,6 @@ public class UserService {
     public void updateUser(Long id, String email, String password) {
         // 유저 정보 조회
         User findUser = userRepository.findByIdOrElseThrow(id);
-        // 비밀번호 검증
-        if (!findUser.getPassword().equals(password)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
-        }
         // 해당 유저 정보 수정
         findUser.updateUser(email);
     }
@@ -50,5 +49,16 @@ public class UserService {
         User findUser = userRepository.findByIdOrElseThrow(id);
         userRepository.delete(findUser);
 
+    }
+
+    // 로그인
+    public LoginResponseDto login (String email, String password) {
+        // 유저 조회
+        User findUser = userRepository.findUserByEmailOrElseThrow(email);
+        // 비밀번호 검증
+        if (!findUser.getPassword().equals(password)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다.");
+        }
+        return new LoginResponseDto(findUser.getId(), findUser.getUsername(), findUser.getEmail());
     }
 }

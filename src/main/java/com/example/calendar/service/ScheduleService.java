@@ -22,7 +22,7 @@ public class ScheduleService {
 
     public ScheduleResponseDto saveSchedule(String username, String title, String task) {
         // 유저 객체 생성
-        User findUser = userRepository.findUserByIdOrElseThrow(username);
+        User findUser = userRepository.findUserByUsernameOrElseThrow(username);
         // Schedule 객체 생성
         Schedule schedule = new Schedule(username, title, task);
         // schedule 의 user 속성에 findUser 객체 정보 저장
@@ -71,7 +71,7 @@ public class ScheduleService {
 
     public void delete(Long id) {
         // delete() - 괄호 안에 객체가 들어가야 하므로 삭제할 객체 조회
-        Schedule findScehdule = scheduleRepository.findByIdOrElseThrow(id);
-        scheduleRepository.delete(findScehdule);
+        Schedule findSchedule = scheduleRepository.findByIdOrElseThrow(id);
+        scheduleRepository.delete(findSchedule);
     }
 }

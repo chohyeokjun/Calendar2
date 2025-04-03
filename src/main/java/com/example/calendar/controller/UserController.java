@@ -1,8 +1,13 @@
 package com.example.calendar.controller;
 
+import com.example.calendar.common.Const;
+import com.example.calendar.dto.LoginRequestDto;
+import com.example.calendar.dto.LoginResponseDto;
 import com.example.calendar.dto.UserRequestDto;
 import com.example.calendar.dto.UserResponseDto;
 import com.example.calendar.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +27,41 @@ public class UserController {
         UserResponseDto userResponseDto = userService.signUp(requestDto.getUsername(), requestDto.getEmail(), requestDto.getPassword());
         return new ResponseEntity<>(userResponseDto, HttpStatus.CREATED);
     }
+
+    // 로그인
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDto> login (@RequestBody LoginRequestDto requestDto, HttpServletRequest request) {
+        // 로그인 메서드 호출
+        LoginResponseDto loginResponseDto = userService.login(requestDto.getEmail(), requestDto.getPassword());
+        // userId 변수에 저장
+        Long userId = loginResponseDto.getId();
+        // 실패시 예외처리
+        if (userId == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        // 로그인 성공시 로직
+        // default 값은 true
+        HttpSession session = request.getSession();
+        // 회원 정보 조회
+        UserResponseDto loginUser = userService.findUsers(userId);
+        // session에 로그인 회원 정보 저장
+        session.setAttribute(Const.LOGIN_USER, loginUser);
+        // 로그인 성공
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    // 로그아웃
+    @PostMapping("/logout")
+    public String logout (HttpServletRequest request) {
+        // 로그인이 아닐 시 HttpSession이 null 값 반환
+        HttpSession session = request.getSession(false);
+        // 세션이 있으면 로그인이 된 경우
+        if (session != null) {
+            session.invalidate(); // 해당 세션 삭제
+        }
+        return "로그아웃";
+    }
+
 
     // 유저 단건 조회
     @GetMapping("/{id}")
